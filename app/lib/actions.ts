@@ -4,6 +4,7 @@ import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+// zod schema for data validation for Invoices
 const FromSchema = z.object({
   id: z.string(),
   customerId: z.string(),
@@ -12,9 +13,11 @@ const FromSchema = z.object({
   date: z.string(),
 });
 
+// omit field from schema to avoid error based on not to pass to function
 const CreateInvoice = FromSchema.omit({ id: true, date: true });
 const UpdateInvoice = FromSchema.omit({ id: true, date: true });
 
+// Create Invoice Server Action
 export const createInvoice = async (formData: FormData) => {
   const { customerId, amount, status } = CreateInvoice.parse({
     customerId: formData.get('customerId'),
@@ -33,6 +36,7 @@ export const createInvoice = async (formData: FormData) => {
   redirect('/dashboard/invoices');
 };
 
+// Update Invoice Server Action
 export const updateInvoice = async (id: string, formData: FormData) => {
   const { customerId, amount, status } = UpdateInvoice.parse({
     customerId: formData.get('customerId'),
@@ -51,6 +55,7 @@ export const updateInvoice = async (id: string, formData: FormData) => {
   redirect('/dashboard/invoices');
 };
 
+// Delete Invoice Server Action
 export const deleteInvoice = async (id: string) => {
   await sql`DELETE FROM Invoices WHERE id = ${id}`;
   revalidatePath('/dashboard/invoices');
