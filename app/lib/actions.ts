@@ -94,8 +94,8 @@ export const updateInvoice = async (
   try {
     await sql`
         UPDATE Invoices 
-        SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
-        WHERE id = ${id}
+        SET customer_id = '${customerId}', amount = ${amountInCents}, status = '${status}'
+        WHERE id = '${id}'
       `;
   } catch (error) {
     return {
